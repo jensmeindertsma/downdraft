@@ -8,7 +8,6 @@ pub struct Node<'a> {
     input: io::Lines<io::StdinLock<'a>>,
     output: io::StdoutLock<'a>,
 
-    node_ids: Vec<NodeId>,
     next_message_id: MessageId,
 }
 
@@ -25,7 +24,7 @@ impl<'a> Node<'a> {
         )
         .expect("Initialization message should be deserializable");
 
-        let InitializationPayload::Receive { node_id, node_ids } = message.body.payload else {
+        let InitializationPayload::Receive { node_id, .. } = message.body.payload else {
             panic!("First message should hold initialization payload")
         };
 
@@ -50,7 +49,6 @@ impl<'a> Node<'a> {
             input,
             output,
             id: node_id,
-            node_ids,
             next_message_id: MessageId::new(1),
         }
     }
@@ -97,7 +95,7 @@ enum InitializationPayload {
     Acknowledge,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub struct NodeId(String);
 
 impl NodeId {
