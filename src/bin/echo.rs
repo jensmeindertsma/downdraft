@@ -19,7 +19,7 @@ fn main() {
             },
         };
 
-        node.send(reply)
+        node.send(&reply)
     }
 }
 

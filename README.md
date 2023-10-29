@@ -40,4 +40,10 @@ The full protocol specification can be found [here](https://github.com/jepsen-io
 ./maelstrom test -w broadcast --bin ../target/release/broadcast --node-count 5 --time-limit 20 --rate 10
 ```
 
+### Challenge 3c: Fault Tolerant Broadcast
+
+```
+./maelstrom test -w broadcast --bin ../target/release/broadcast --node-count 5 --time-limit 20 --rate 10 --nemesis partition
+```
+
 Other commands will follow as I complete my implementations...

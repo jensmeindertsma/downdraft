@@ -6,7 +6,7 @@ pub struct Node<'a> {
     pub id: NodeId,
 
     input: io::Lines<io::StdinLock<'a>>,
-    output: io::StdoutLock<'a>,
+    output: io::Stdout,
 
     next_message_id: MessageId,
 }
@@ -14,7 +14,7 @@ pub struct Node<'a> {
 impl<'a> Node<'a> {
     pub fn initialize() -> Self {
         let mut input = io::stdin().lock().lines();
-        let mut output = io::stdout().lock();
+        let mut output = io::stdout();
 
         let message: Message<InitializationPayload> = serde_json::from_str(
             &input
@@ -63,14 +63,14 @@ impl<'a> Node<'a> {
         })
     }
 
-    pub fn send<Payload>(&mut self, message: Message<Payload>)
+    pub fn send<Payload>(&mut self, message: &Message<Payload>)
     where
         Payload: Serialize,
     {
         writeln!(
             self.output,
             "{}",
-            serde_json::to_string(&message).expect("Serializing message should succeed")
+            serde_json::to_string(message).expect("Serializing message should succeed")
         )
         .expect("Writing to standard output should succeed")
     }

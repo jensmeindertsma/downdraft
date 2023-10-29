@@ -24,7 +24,7 @@ fn main() {
 
         id += 1;
 
-        node.send(reply)
+        node.send(&reply)
     }
 }
 

@@ -19,7 +19,7 @@ pub struct Body<Payload> {
     pub payload: Payload,
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub struct MessageId(usize);
 
 impl MessageId {
