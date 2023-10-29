@@ -34,4 +34,10 @@ The full protocol specification can be found [here](https://github.com/jepsen-io
 ./maelstrom test -w broadcast --bin ../target/release/broadcast --node-count 1 --time-limit 20 --rate 10
 ```
 
+### Challenge 3b: Multi-Node Broadcast
+
+```
+./maelstrom test -w broadcast --bin ../target/release/broadcast --node-count 5 --time-limit 20 --rate 10
+```
+
 Other commands will follow as I complete my implementations...

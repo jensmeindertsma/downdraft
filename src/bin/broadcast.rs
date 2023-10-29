@@ -18,24 +18,29 @@ fn main() {
 
                 eprintln!("Using known topology to broadcast: = {topology:?}");
 
-                seen.insert(value);
+                let known = !seen.insert(value);
 
-                // for neighbor in topology
-                //     .get(&node.id)
-                //     .expect("Topology should contain own node ID")
-                // {
-                //     let message = Message {
-                //         source: node.id.clone(),
-                //         destination: neighbor.clone(),
-                //         body: Body {
-                //             message_id: Some(node.next_message_id()),
-                //             in_reply_to: None,
-                //             payload: Payload::Broadcast { value },
-                //         },
-                //     };
+                for neighbor in topology
+                    .get(&node.id)
+                    .expect("Topology should contain own node ID")
+                {
+                    // Only broadcast to neighbors if we see the value for the first time.
+                    // Otherwise they might send it back to us even though we already knew
+                    // the value, and we might send again, in a loop.
+                    if !known {
+                        let message = Message {
+                            source: node.id.clone(),
+                            destination: neighbor.clone(),
+                            body: Body {
+                                message_id: Some(node.next_message_id()),
+                                in_reply_to: None,
+                                payload: Payload::Broadcast { value },
+                            },
+                        };
 
-                //     node.send(message)
-                // }
+                        node.send(message)
+                    }
+                }
 
                 let reply = Message {
                     source: node.id.clone(),
@@ -48,6 +53,10 @@ fn main() {
                 };
 
                 node.send(reply)
+            }
+            Payload::BroadcastOk => {
+                // We can use here the `in_reply_to` to know the message arrived and we can stop
+                // re-sending.
             }
             Payload::Read => {
                 let reply = Message {
@@ -63,6 +72,9 @@ fn main() {
                 };
 
                 node.send(reply)
+            }
+            Payload::ReadOk { .. } => {
+                panic!("We never asked for a read so why are we getting an okay back?")
             }
             Payload::Topology {
                 topology: new_topology,
@@ -83,7 +95,9 @@ fn main() {
 
                 node.send(reply)
             }
-            _ => panic!("Unexpected incoming payload!"),
+            Payload::TopologyOk => {
+                panic!("We never asked for a topology so why are we getting an okay back?")
+            }
         }
     }
 }
