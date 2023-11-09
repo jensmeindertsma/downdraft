@@ -1,6 +1,6 @@
 use std::io::{self, BufRead};
 
-use downdraft::{handle_initialization, send_message, Body, Message, MessageId};
+use downdraft::{handle_initialization, send_message, Body, Message};
 use serde::{Deserialize, Serialize};
 
 fn main() {
