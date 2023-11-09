@@ -30,4 +30,10 @@ impl MessageId {
     pub fn id(&self) -> usize {
         self.0
     }
+
+    pub fn next_id(&mut self) -> Self {
+        let id = *self;
+        self.0 += 1;
+        id
+    }
 }
